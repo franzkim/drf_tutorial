@@ -1,1 +1,1 @@
-from .cbv import SnippetList, SnippetDetail
+from .cbv import SnippetList, SnippetDetail, SnippetHighlight

@@ -1,5 +1,6 @@
 from django.http import Http404
 from rest_framework import permissions
+from rest_framework import renderers
 from rest_framework import status, mixins, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -51,8 +52,8 @@ class SnippetDetail1(APIView):
 
 
 class SnippetList2(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
-                  generics.GenericAPIView):
+                   mixins.CreateModelMixin,
+                   generics.GenericAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
 
@@ -64,9 +65,9 @@ class SnippetList2(mixins.ListModelMixin,
 
 
 class SnippetDetail2(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
+                     mixins.UpdateModelMixin,
+                     mixins.DestroyModelMixin,
+                     generics.GenericAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
 
@@ -99,3 +100,12 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerReadOnly,
     )
+
+
+class SnippetHighlight(generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    renderer_classes = (renderers.StaticHTMLRenderer,)
+
+    def get(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
